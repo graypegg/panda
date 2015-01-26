@@ -1,6 +1,13 @@
 #!/bin/bash
 build="../build/panda"
 cd ./src
+fcount=`ls -l ../build/old-builds | wc -l`
+if [ $fcount -ge 5 ]; then
+	echo "Erasing old builds"
+	cd ../build/old-builds
+	rm -R panda*
+	cd ../../src
+fi
 if [ -f $build ]; then
 	echo "Moving old build"
 	mv $build "../build/old-builds/panda-`date +%s`"
