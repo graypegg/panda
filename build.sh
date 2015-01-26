@@ -16,5 +16,13 @@ echo "Starting GHC"
 /usr/bin/time -f "%S" ghc --make -o $build Main 2> temp
 ptime=`cat temp`
 rm temp
-echo "Done in "$ptime"s"
 cd ..
+if [ -f "panda" ]; then
+	echo "Deleting old symbolic link"
+	rm panda
+fi
+if [ -f "build/panda" ]; then
+	echo "Creating symbolic link"
+	ln -s build/panda panda
+fi
+echo "Done in "$ptime"s"
