@@ -14,8 +14,4 @@ main = do
 		putStrLn "# This is your private key, hide this."
 		putStrLn (formatSecret (read priv::Integer))
 	else do
-		{-putStrLn "# This is your public key, give this to people."
-		putStrLn (formatKey (keyGen(read (head args)::Integer)))
-		putStrLn "# This is your private key, hide this."
-		putStrLn (formatSecret (read (head args)::Integer))-}
-		putStrLn $ show $ unformatSecret (head args)
+		putStrLn $ show $ commonKey (unformatKey (head args)) (unformatSecret (last args))
