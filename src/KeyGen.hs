@@ -1,13 +1,8 @@
-module KeyGen(keyGen, keysGen, commonKey, commonKeys) where
+module KeyGen(keyGen, keysGen, commonKey, commonKeys, GenData, Key, Result) where
+import KeyTypes
 
 p = 761
 g = 6
-
-data GenData = GenData Integer Integer
-instance Show GenData where
-		show (GenData p g) = "[p="++(show p)++",g="++(show g)++"]"
-data Key = Key Integer GenData | Keys [Integer] GenData deriving(Show)
-data Result = Result Integer deriving(Show)
 
 keyGen :: Integer -> Key
 keyGen x = Key ((g^x) `mod` p) (GenData p g)
