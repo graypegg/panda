@@ -1,18 +1,33 @@
 #!/bin/bash
+resetFiles () {
+	if ls src/*.o 1> /dev/null 2>&1; then
+		echo "Removing pointer files"
+		cd src
+		rm *.o *.hi
+		cd ../
+	fi
+	if [ -f "build/panda" ]; then
+		echo "Removing current build"
+		cd build
+		rm panda
+		cd ../
+	fi
+	if ls build/old-builds/panda* 1> /dev/null 2>&1; then
+		echo "Removing old builds"
+		cd build/old-builds
+		rm panda*
+		cd ../..
+	fi
+	if ls panda 1> /dev/null 2>&1; then
+		echo "Removing old symbolic link"
+		rm panda
+	fi
+}
 run () {
-	echo "Removing pointer files"
-	cd ./src
-	rm *.o *.hi
-	echo "Removing current build"
-	cd ../build
-	rm panda
-	echo "Removing old builds"
-	cd old-builds
-	rm -R panda*
-	echo "Removing old symbolic link"
-	cd ../..
-	rm panda
-	echo "Done"
+	TIMEFORMAT='%lU';time ( resetFiles ) 2>temp
+	ptime=`cat temp`
+	rm temp
+	echo "Done in "$ptime
 }
 while true; do
     read -p "Are you sure? " yn
