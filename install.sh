@@ -3,7 +3,6 @@ if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 1>&2
    exit 1
 fi
-build="../build/panda"
 if [ -f "/usr/local/bin/panda" ]; then
 	echo "Deleting old installed build"
 	sudo rm /usr/local/bin/panda

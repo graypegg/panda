@@ -1,4 +1,4 @@
-module KeyGen(keyGen, keysGen, commonKey, commonKeys, GenData, Key, Result) where
+module KeyGen(keyGen, keysGen, commonKey, commonKeys) where
 import KeyTypes
 
 p = 10007   --Prime Number
