@@ -1,3 +1,21 @@
+{-
+    Panda Diffie-Hellman Key Exchange
+    Copyright (C) 2015 Graham John Pegg
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-}
+
 import KeyGen
 import KeyIO
 import KeyTypes
@@ -6,7 +24,8 @@ import System.IO
 import Control.Applicative
 import Options
 
-data MainOptions = MainOptions { optFile :: String }
+data MainOptions = MainOptions { optFile :: String
+							   , optVersion :: Bool }
 
 instance Options MainOptions where
     defineOptions = pure MainOptions
@@ -15,6 +34,12 @@ instance Options MainOptions where
 			, optionLongFlags = ["file"]
 			, optionDefault = ""
 			, optionDescription = "The file to print output to."
+			})
+        <*> defineOption optionType_bool (\o -> o
+			{ optionShortFlags = ['v']
+			, optionLongFlags = ["version"]
+			, optionDefault = False
+			, optionDescription = "Displays license and version information."
 			})
 
 data MakeOpts = MakeOpts { optKeySecret :: String
@@ -50,6 +75,7 @@ instance Options MakeOpts where
 
 makeNumber :: MainOptions -> MakeOpts -> [String] -> IO ()
 makeNumber mainOpts opts args
+	| (optVersion mainOpts) = printVersion
 	| (optFile mainOpts)/="" && (optJSON opts)==True = do
 		writeData (optFile mainOpts) $ resultToJSON (unformatKey (optKeyPublic opts)) (unformatSecret (optKeySecret opts)) (commonKey (unformatKey (optKeyPublic opts)) (unformatSecret (optKeySecret opts)))
 	| (optFile mainOpts)/="" && (optQuiet opts)==True = do
@@ -113,6 +139,9 @@ instance Options GenOpts where
         
 genKey :: MainOptions -> GenOpts -> [String] -> IO ()
 genKey mainOpts opts args = do
+	if (optVersion mainOpts) then do
+		printVersion
+	else do
 		if (optJustPublic opts)==True then do
 			if (optGenJSON opts)==True then do
 				if (optFile mainOpts)/="" then do
@@ -168,14 +197,23 @@ keyGenChoose p g s
 	| p/=0 || g/=0 = keyGenPG s (p,g)
 	| otherwise    = keyGen s
 
+printVersion :: IO()
+printVersion = do
+	putStrLn ("Panda Diffie-Hellman Key Exchange  Copyright (C) 2015 Graham John Pegg")
+	putStrLn ("This program comes with ABSOLUTELY NO WARRANTY.")
+	putStrLn ("This is free software, and you are welcome to redistribute it")
+	putStrLn ("under certain conditions; Please see LICENSE to learn more.")
+	putStrLn ("----------------------------------------------------------------------")
+	putStrLn ("Version 2.5                                             Jan. 29th 2015")
+
 askGenKey :: GenOpts -> [String] -> IO()
-askGenKey opts args = do
+askGenKey opt args= do
 		hPutStrLn stderr "Enter a generator:"
 		priv <- getLine
 		hPutStrLn stderr "-----------------------"
-		hashtags opts "# This is your public key, give this to people."
+		putStrLn "# This is your public key, give this to people."
 		putStrLn (formatKey (keyGen (read priv::Integer)))
-		hashtags opts "# This is your private key, hide this."
+		putStrLn "# This is your private key, hide this."
 		putStrLn (formatSecret (read priv::Integer))
 
 main = do
@@ -184,7 +222,10 @@ main = do
 		runCommand $ \opts args -> do
 			askGenKey opts args
 	else do
-		runSubcommand [ subcommand "make" makeNumber
-					  , subcommand "gen" genKey
-					  ]
+		if (args!!0)=="-v"||(args!!0)=="--version" then do
+			printVersion
+		else do
+			runSubcommand [ subcommand "make" makeNumber
+						  , subcommand "gen" genKey
+						  ]
 
