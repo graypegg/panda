@@ -1,0 +1,2 @@
+#!/bin/bash
+while true; do read ui; echo $ui |openssl enc -aes-256-cbc -a -k $1; done | nc -l -p 8877 | while read so; do decoded_so=`echo "$so"| openssl enc -d -a -aes-256-cbc -k $1`; echo -e "$decoded_so"; done

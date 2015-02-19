@@ -19,8 +19,8 @@
 module KeyGen(keyGen, keysGen, commonKey, commonKeys, keyGenPG, keysGenPG) where
 import KeyTypes
 
-p = 10007   --Prime Number
-g = 5       --Primitive Root
+p = 987123025220232575950828439   --Prime Number
+g = 19                            --Primitive Root
 
 keyGen :: Integer -> Key
 keyGen x = Key ((g^x) `mod` p) (GenData p g)
