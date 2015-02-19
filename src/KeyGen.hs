@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
-module KeyGen(keyGen, keysGen, commonKey, commonKeys, keyGenPG, keysGenPG) where
+module KeyGen(keyGen, keysGen, keyGenComplex, keysGenComplex, commonKey, commonKeys, keyGenPG, keysGenPG) where
 import KeyTypes
 import KeyGenerators
 
@@ -25,6 +25,12 @@ keyGen x = Key ((g^x) `mod` p) (GenData p g)
 
 keysGen :: [Integer] -> Key
 keysGen xs = Keys [((g^x) `mod` p) | x <- xs] (GenData p g)
+
+keyGenComplex :: Integer -> Key
+keyGenComplex x = Key ((gComplex^x) `mod` pComplex) (GenData pComplex gComplex)
+
+keysGenComplex :: [Integer] -> Key
+keysGenComplex xs = Keys [((gComplex^x) `mod` pComplex) | x <- xs] (GenData pComplex gComplex)
 
 commonKey :: Key -> Integer -> Result
 commonKey (Key x (GenData ps _)) s = Result (x^s `mod` ps)
