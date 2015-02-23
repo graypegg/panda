@@ -141,7 +141,7 @@ instance Options GenOpts where
 			{ optionShortFlags = ['x']
 			, optionLongFlags = ["complex"]
 			, optionDefault = False
-			, optionDescription = "Use a more secure, but more processor intensive, prime and primitive root"
+			, optionDescription = "Use a more secure, but more processor intensive, prime and primitive root (1024 bit)"
 			})
         
 genKey :: MainOptions -> GenOpts -> [String] -> IO ()
