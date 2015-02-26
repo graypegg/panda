@@ -14,6 +14,9 @@ if ls build/old-builds/panda-* 1> /dev/null 2>&1; then
 	echo -e "${NC}Current build [c] or old build [o] ?"
 	read x
 	if [ "~$x" == '~o' ]; then
+		echo "------------------"
+		ls ./build/old-builds | grep panda*
+		echo "------------------"
 		echo -e "${NC}Please enter time stamp from build name"
 		read build
 		if [ -f "build/old-builds/panda-$build" ]; then
