@@ -1,3 +1,5 @@
+{-# LANGUAGE DoAndIfThenElse #-}
+
 {-
     Panda Diffie-Hellman Key Exchange
     Copyright (C) 2015 Graham John Pegg
