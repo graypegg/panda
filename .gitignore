@@ -2,3 +2,4 @@
 *.hi
 build/
 panda
+dist
