@@ -1,5 +1,7 @@
 <img src="http://digitalpanda.ca/panda/panda-header.png"/>
 
+[![Build Status](https://travis-ci.org/toish/panda.svg?branch=master)](https://travis-ci.org/toish/panda)
+
 Panda Key Exchange uses the Diffie-Hellman key exchange to generate a common passcode between two computers over a unsecured network.
 
 ## Installing
