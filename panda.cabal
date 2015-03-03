@@ -12,17 +12,17 @@ cabal-version:       >=1.8
 
 executable panda
   main-is: Main.hs
-  build-depends:       base ==4.6.*, options ==1.2.*, split ==0.2.*
+  build-depends:       base, options ==1.2.*, split ==0.2.*
   hs-source-dirs:      src
 
 Test-Suite checkSimplePrime
   type:           exitcode-stdio-1.0
   main-is:        checkSimplePrime.hs
   hs-source-dirs: src, util/tests
-  build-depends:  base
+  build-depends:  base, split ==0.2.*
 
 Test-Suite checkComplexPrime
   type:           exitcode-stdio-1.0
   main-is:        checkComplexPrime.hs
   hs-source-dirs: src, util/tests
-  build-depends:  base
+  build-depends:  base, split ==0.2.*
