@@ -10,7 +10,7 @@ You'll need to compile panda from source, but don't worry, it ain't that hard.
 ### You'll need:
 - GHC compiler
 - Cabal (If compiling with Cabal)
-- A linux distro (Ubuntu preferably) [Windows _**MIGHT**_ work]
+- A BASH shell [Windows _**MIGHT**_ work]
 
 ### Compiling (The easy way)
 1. Clone the repo
@@ -21,8 +21,8 @@ You'll need to compile panda from source, but don't worry, it ain't that hard.
 1. Clone the repo
 2. `runhaskell Setup configure`
 3. `runhaskell Setup build`
-4. `sudo runhaskell Setup install`
-4a. `runhaskell Setup install` **! Only if your running windows !**
+4. `sudo runhaskell Setup install` **! Only if your running a BASH like shell !**
+4. `runhaskell Setup install` **! Only if your running windows !**
 5. You should be able to use panda as a command!
 
 ## How to use
