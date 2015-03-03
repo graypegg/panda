@@ -1,6 +1,8 @@
 <img src="http://digitalpanda.ca/panda/panda-header.png"/>
 
-[![Build Status](https://travis-ci.org/toish/panda.svg?branch=master)](https://travis-ci.org/toish/panda)
+[![Build Status](https://travis-ci.org/toish/panda.svg?branch=master)](https://travis-ci.org/toish/panda) :crown: Master Branch
+
+[![Build Status](https://travis-ci.org/toish/panda.svg?branch=develop)](https://travis-ci.org/toish/panda) :wrench: Develop Branch
 
 Panda Key Exchange uses the Diffie-Hellman key exchange to generate a common passcode between two computers over a unsecured network.
 
@@ -53,3 +55,5 @@ Will generate the result, p should be someone elses public key, and s should be 
 10. | `panda make ... -j`                     | Same as 6, but outputs in JSON format
 11. | `panda -v`                              | Shows version and license info
 12. | `panda ... --file=filePath`             | Outputs into a file
+
+:squirrel:
