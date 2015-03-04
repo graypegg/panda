@@ -1,8 +1,11 @@
 <img src="http://digitalpanda.ca/panda/panda-header.png"/>
+<div align="center">
 
-[![Build Status](https://travis-ci.org/toish/panda.svg?branch=master)](https://travis-ci.org/toish/panda) :crown: Master Branch
+<a href="https://travis-ci.org/toish/panda"><img src="https://travis-ci.org/toish/panda.svg?branch=master"/> <img src="http://digitalpanda.ca/panda/master.png"/></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://travis-ci.org/toish/panda"><img src="https://travis-ci.org/toish/panda.svg?branch=develop"/> <img src="http://digitalpanda.ca/panda/develop.png"/></a>
 
-[![Build Status](https://travis-ci.org/toish/panda.svg?branch=develop)](https://travis-ci.org/toish/panda) :wrench: Develop Branch
+</div>
+<br/>
 
 Panda Key Exchange uses the Diffie-Hellman key exchange to generate a common passcode between two computers over a unsecured network.
 
@@ -39,6 +42,9 @@ Will generate a key, with a secret number of 202. This secret number should be m
 panda make -p PANDAKEY:8009-10007:5 -s PANDASECRET:31a3b
 ```
 Will generate the result, p should be someone elses public key, and s should be your secret key.
+
+## Need help?
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/toish/panda?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Command-line Arguments
  .  |                 Command                 |                                    Information
