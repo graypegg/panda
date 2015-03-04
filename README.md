@@ -9,6 +9,8 @@
 Panda Key Exchange uses the Diffie-Hellman key exchange to generate a common passcode between two computers over a unsecured network.
 
 ## Installing
+
+[![Join the chat at https://gitter.im/toish/panda](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/toish/panda?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 You'll need to compile panda from source, but don't worry, it ain't that hard.
 
 ### You'll need:
