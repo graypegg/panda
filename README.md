@@ -1,8 +1,10 @@
 <img src="http://digitalpanda.ca/panda/panda-header.png"/>
+<div align="center">
 
-[![Build Status](https://travis-ci.org/toish/panda.svg?branch=master)](https://travis-ci.org/toish/panda) :crown: Master Branch
+<a href="https://travis-ci.org/toish/panda"><img src="https://travis-ci.org/toish/panda.svg?branch=master"/> <img src="http://digitalpanda.ca/panda/master.png"/></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://travis-ci.org/toish/panda"><img src="https://travis-ci.org/toish/panda.svg?branch=develop"/> <img src="http://digitalpanda.ca/panda/develop.png"/></a>
 
-[![Build Status](https://travis-ci.org/toish/panda.svg?branch=develop)](https://travis-ci.org/toish/panda) :wrench: Develop Branch
+</div>
 
 Panda Key Exchange uses the Diffie-Hellman key exchange to generate a common passcode between two computers over a unsecured network.
 
