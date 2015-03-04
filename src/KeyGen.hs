@@ -33,6 +33,8 @@ keysGenComplex :: [Integer] -> Key
 keysGenComplex xs = Keys [((gComplex^x) `mod` pComplex) | x <- xs] (GenData pComplex gComplex)
 
 commonKey :: Key -> Integer -> Result
+commonKey (Key 0 (GenData 0 0 )) _ = Fail
+commonKey _ (-1) = Fail
 commonKey (Key x (GenData ps _)) s = Result (x^s `mod` ps)
 
 commonKeys :: Key -> [Integer] -> Result
