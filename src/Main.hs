@@ -23,57 +23,10 @@ import KeyIO
 import KeyTypes
 import System.Environment
 import System.IO
-import Control.Applicative
 import Options
-
-data MainOptions = MainOptions { optFile :: String
-							   , optVersion :: Bool }
-
-instance Options MainOptions where
-    defineOptions = pure MainOptions
-        <*> defineOption optionType_string (\o -> o
-			{ optionShortFlags = ['f']
-			, optionLongFlags = ["file"]
-			, optionDefault = ""
-			, optionDescription = "The file to print output to."
-			})
-        <*> defineOption optionType_bool (\o -> o
-			{ optionShortFlags = ['v']
-			, optionLongFlags = ["version"]
-			, optionDefault = False
-			, optionDescription = "Displays license and version information."
-			})
-
-data MakeOpts = MakeOpts { optKeySecret :: String
-					     , optKeyPublic :: String
-					     , optJSON :: Bool
-					     , optQuiet :: Bool }
-instance Options MakeOpts where
-    defineOptions = pure MakeOpts
-        <*> defineOption optionType_string (\o -> o
-			{ optionShortFlags = ['s']
-			, optionLongFlags = ["secret"]
-			, optionDefault = ""
-			, optionDescription = "Your own secret key."
-			})
-    	<*> defineOption optionType_string (\o -> o
-			{ optionShortFlags = ['p']
-			, optionLongFlags = ["public"]
-			, optionDefault = ""
-			, optionDescription = "Their public key."
-			})
-    	<*> defineOption optionType_bool (\o -> o
-			{ optionShortFlags = ['j']
-			, optionLongFlags = ["json"]
-			, optionDefault = False
-			, optionDescription = "Output all information in JSON format."
-			})
-    	<*> defineOption optionType_bool (\o -> o
-			{ optionShortFlags = ['q']
-			, optionLongFlags = ["quiet"]
-			, optionDefault = False
-			, optionDescription = "Only output the result."
-			})
+import Cmd.MainOpts
+import Cmd.MakeOpts
+import Cmd.GenOpts
 
 makeNumber :: MainOptions -> MakeOpts -> [String] -> IO ()
 makeNumber mainOpts opts args
@@ -88,63 +41,6 @@ makeNumber mainOpts opts args
 		putStrLn $ justResult (commonKey (unformatKey (optKeyPublic opts)) (unformatSecret (optKeySecret opts)))
 	| otherwise              = do
     	putStrLn $ show $ commonKey (unformatKey (optKeyPublic opts)) (unformatSecret (optKeySecret opts))
-
-data GenOpts = GenOpts { optKeyGenerator :: Integer
-					   , optComments :: Bool
-					   , optGenJSON :: Bool
-					   , optJustSecret :: Bool
-					   , optJustPublic :: Bool
-					   , optGenPrime :: Integer
-					   , optGenRoot :: Integer
-					   , optComplex :: Bool }
-instance Options GenOpts where
-    defineOptions = pure GenOpts
-    	<*> defineOption optionType_integer (\o -> o
-			{ optionShortFlags = ['n']
-			, optionLongFlags = ["generator"]
-			, optionDefault = 0
-			, optionDescription = "A generator number. (Warning, make sure this number is as random as possible)"
-			})
-    	<*> defineOption optionType_bool (\o -> o
-			{ optionShortFlags = ['c']
-			, optionLongFlags = ["comments"]
-			, optionDefault = False
-			, optionDescription = "Shows comments in output. (Lines prepended with #)"
-			})
-    	<*> defineOption optionType_bool (\o -> o
-			{ optionShortFlags = ['j']
-			, optionLongFlags = ["json"]
-			, optionDefault = False
-			, optionDescription = "Output all information in JSON format."
-			})
-    	<*> defineOption optionType_bool (\o -> o
-			{ optionShortFlags = ['s']
-			, optionLongFlags = ["secret"]
-			, optionDefault = False
-			, optionDescription = "Shows just the secret."
-			})
-    	<*> defineOption optionType_bool (\o -> o
-			{ optionShortFlags = ['p']
-			, optionLongFlags = ["public"]
-			, optionDefault = False
-			, optionDescription = "Shows just the public key."
-			})
-    	<*> defineOption optionType_integer (\o -> o
-			{ optionLongFlags = ["prime"]
-			, optionDefault = 0
-			, optionDescription = "A new prime number to generate with"
-			})
-    	<*> defineOption optionType_integer (\o -> o
-			{ optionLongFlags = ["root"]
-			, optionDefault = 0
-			, optionDescription = "A new primative root number to generate with"
-			})
-    	<*> defineOption optionType_bool (\o -> o
-			{ optionShortFlags = ['x']
-			, optionLongFlags = ["complex"]
-			, optionDefault = False
-			, optionDescription = "Use a more secure, but more processor intensive, prime and primitive root (1024 bit)"
-			})
         
 genKey :: MainOptions -> GenOpts -> [String] -> IO ()
 genKey mainOpts opts args = do
