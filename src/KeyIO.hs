@@ -16,11 +16,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
-module KeyIO(formatKey,unformatKey,formatSecret,unformatSecret,keyInfo,resultToJSON,keyToJSON,justResult,writeData) where
+module KeyIO(formatKey,unformatKey,formatSecret,unformatSecret,keyInfo,resultToJSON,keyToJSON,justResult,writeData,readData) where
 import KeyTypes
 import KeyGen
 import Numeric
 import Data.List.Split
+import Data.List
 
 formatKey :: Key -> String
 formatKey (Key x (GenData p g)) = "PANDAKEY:"++(showHex x "")++"-"++(showHex p "")++":"++(show g)
@@ -67,3 +68,21 @@ justResult (Result r) = (show r)
 
 writeData :: String -> String -> IO()
 writeData f str = writeFile f str
+
+isComment :: String -> Bool
+isComment ('#':_) = True
+isComment _ = False
+
+sanitise :: [String] -> [String]
+sanitise rawData = foldl (\acc x -> if (isComment x) then (acc) else (acc++[x])) [] rawData
+
+readData :: String -> IO([String])
+readData f = do
+    rawData <- readFile f
+    return (sanitise (lines rawData))
+
+readPublicKey :: [String] -> Key
+readPublicKey (x:xs)
+    | "PANDAKEY:" `isPrefixOf` x = unformatKey x
+    | otherwise                  = readPublicKey xs
+readPublicKey [] = Key 0 (GenData 0 0)
