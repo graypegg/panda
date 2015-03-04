@@ -91,4 +91,4 @@ readSecretKey :: [String] -> Integer
 readSecretKey (x:xs)
     | "PANDASECRET:" `isPrefixOf` x = unformatSecret x
     | otherwise                     = readSecretKey xs
-readSecretKey [] = 0
+readSecretKey [] = (-1)
