@@ -11,7 +11,7 @@ resetFiles () {
 	if ls src/*.o 1> /dev/null 2>&1; then
 		echo -e "${blue}Removing pointer files${NC}"
 		cd src
-		rm *.o *.hi
+		rm *.o *.hi Cmd/*.o Cmd/*.hi
 		cd ../
 	fi
 	if [ -f "build/panda" ]; then
