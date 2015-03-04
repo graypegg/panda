@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
-module KeyIO(formatKey,unformatKey,formatSecret,unformatSecret,keyInfo,resultToJSON,keyToJSON,justResult,writeData,readData) where
+module KeyIO(formatKey,unformatKey,formatSecret,unformatSecret,keyInfo,resultToJSON,keyToJSON,justResult,writeData,readData,readPublicKey,readSecretKey) where
 import KeyTypes
 import KeyGen
 import Numeric
@@ -86,3 +86,9 @@ readPublicKey (x:xs)
     | "PANDAKEY:" `isPrefixOf` x = unformatKey x
     | otherwise                  = readPublicKey xs
 readPublicKey [] = Key 0 (GenData 0 0)
+
+readSecretKey :: [String] -> Integer
+readSecretKey (x:xs)
+    | "PANDASECRET:" `isPrefixOf` x = unformatSecret x
+    | otherwise                     = readSecretKey xs
+readSecretKey [] = 0

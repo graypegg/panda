@@ -23,6 +23,7 @@ import KeyIO
 import KeyTypes
 import System.Environment
 import System.IO
+import Data.List
 import Options
 import Cmd.MainOpts
 import Cmd.MakeOpts
@@ -32,16 +33,26 @@ makeNumber :: MainOptions -> MakeOpts -> [String] -> IO ()
 makeNumber mainOpts opts args
 	| (optVersion mainOpts) = printVersion
 	| (optFile mainOpts)/="" && (optJSON opts)==True = do
-		writeData (optFile mainOpts) $ resultToJSON (unformatKey (optKeyPublic opts)) (unformatSecret (optKeySecret opts)) (commonKey (unformatKey (optKeyPublic opts)) (unformatSecret (optKeySecret opts)))
+		pubKey <- (checkIfFilePublic (optKeyPublic opts))
+		secretKey <- (checkIfFileSecret (optKeySecret opts))
+		writeData (optFile mainOpts) $ resultToJSON pubKey secretKey (commonKey pubKey secretKey)
 	| (optFile mainOpts)/="" && (optQuiet opts)==True = do
-		writeData (optFile mainOpts) $ justResult (commonKey (unformatKey (optKeyPublic opts)) (unformatSecret (optKeySecret opts)))
+		pubKey <- (checkIfFilePublic (optKeyPublic opts))
+		secretKey <- (checkIfFileSecret (optKeySecret opts))
+		writeData (optFile mainOpts) $ justResult (commonKey pubKey secretKey)
 	| (optJSON opts)==True   = do
-		putStrLn $ resultToJSON (unformatKey (optKeyPublic opts)) (unformatSecret (optKeySecret opts)) (commonKey (unformatKey (optKeyPublic opts)) (unformatSecret (optKeySecret opts)))
+		pubKey <- (checkIfFilePublic (optKeyPublic opts))
+		secretKey <- (checkIfFileSecret (optKeySecret opts))
+		putStrLn $ resultToJSON pubKey secretKey (commonKey pubKey secretKey)
 	| (optQuiet opts)== True = do
-		putStrLn $ justResult (commonKey (unformatKey (optKeyPublic opts)) (unformatSecret (optKeySecret opts)))
+		pubKey <- (checkIfFilePublic (optKeyPublic opts))
+		secretKey <- (checkIfFileSecret (optKeySecret opts))
+		putStrLn $ justResult (commonKey pubKey secretKey)
 	| otherwise              = do
-    	putStrLn $ show $ commonKey (unformatKey (optKeyPublic opts)) (unformatSecret (optKeySecret opts))
-        
+		pubKey <- (checkIfFilePublic (optKeyPublic opts))
+		secretKey <- (checkIfFileSecret (optKeySecret opts))
+		print $ commonKey pubKey secretKey
+
 genKey :: MainOptions -> GenOpts -> [String] -> IO ()
 genKey mainOpts opts args = do
 	if (optVersion mainOpts) then do
@@ -121,6 +132,20 @@ askGenKey opt args= do
 		putStrLn (formatKey (keyGen (read priv::Integer)))
 		putStrLn "# This is your private key, hide this."
 		putStrLn (formatSecret (read priv::Integer))
+
+checkIfFileSecret :: String -> IO(Integer)
+checkIfFileSecret x
+	| "PANDASECRET:" `isPrefixOf` x = return (unformatSecret x)
+	| otherwise                      = do
+									   raw <- readData x
+									   return (readSecretKey raw)
+
+checkIfFilePublic :: String -> IO(Key)
+checkIfFilePublic x
+	| "PANDAKEY:" `isPrefixOf` x = return (unformatKey x)
+	| otherwise                   = do
+									raw <- readData x
+									return (readPublicKey raw)
 
 main = do
 	args <- getArgs
