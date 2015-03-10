@@ -62,11 +62,15 @@ printIf b str
 resultToJSON :: Key -> Integer -> Result -> String
 resultToJSON (Key k (GenData p g)) s (Result r) = "{\"key\":"++(show k)++",\"secret\":"++(show s)++",\"result\":"++(show r)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
 
-keyToJSON :: Key -> Integer -> KeyType -> String
+keyToJSON :: (Show a) => Key -> a -> KeyType -> String
 keyToJSON (Key k (GenData p g)) s t
-	| t==Private = "{\"secret\":"++(show s)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
-	| t==Public  = "{\"key\":"++(show k)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
-	| otherwise  = "{\"key\":"++(show k)++",\"secret\":"++(show s)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
+	| t==Private = "{\"type\":\"single\",\"secret\":"++(show s)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
+	| t==Public  = "{\"type\":\"single\",\"key\":"++(show k)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
+	| otherwise  = "{\"type\":\"single\",\"key\":"++(show k)++",\"secret\":"++(show s)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
+keyToJSON (Keys k (GenData p g)) s t
+    | t==Private = "{\"type\":\"multi\",\"secrets\":"++(show s)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
+    | t==Public  = "{\"type\":\"multi\",\"keys\":"++(show k)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
+    | otherwise  = "{\"type\":\"multi\",\"keys\":"++(show k)++",\"secrets\":"++(show s)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
 
 justResult :: Result -> String
 justResult (Result r) = (show r)
