@@ -16,15 +16,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
-module KeyIO(formatKey,unformatKey,formatSecret,unformatSecret,keyInfo,resultToJSON,keyToJSON,justResult,writeData,readData,readPublicKey,readSecretKey) where
+module KeyIO(formatKey,unformatKey,formatSecret,unformatSecret,keyInfo,resultToJSON,keyToJSON,justResult,writeData,readData,readPublicKey,readSecretKey,toSecretList) where
 import KeyTypes
 import KeyGen
 import Numeric
 import Data.List.Split
 import Data.List
 
+showHexs :: [Integer] -> String -> String
+showHexs (x:xs) acc = showHexs xs ((showHex x "")++","++acc)
+showHexs [] acc = (init acc)
+
 formatKey :: Key -> String
 formatKey (Key x (GenData p g)) = "PANDAKEY:"++(showHex x "")++"-"++(showHex p "")++":"++(show g)
+formatKey (Keys x (GenData p g)) = "PANDAKEYS:"++(showHexs x "")++"-"++(showHex p "")++":"++(show g)
 
 unformatKey :: String -> Key
 unformatKey x = Key (getKeyX x) (GenData (getKeyP x) (getKeyG x))
@@ -92,3 +97,9 @@ readSecretKey (x:xs)
     | "PANDASECRET:" `isPrefixOf` x = unformatSecret x
     | otherwise                     = readSecretKey xs
 readSecretKey [] = (-1)
+
+splitM :: String -> [String]
+splitM m = splitOn "," m
+
+toSecretList :: String -> [Integer]
+toSecretList m = map read (splitM m)

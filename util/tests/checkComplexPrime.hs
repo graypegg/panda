@@ -7,10 +7,10 @@ import KeyGen
 import KeyTypes
 import KeyIO
 
-keyOneP = (keyGenComplex 2)
-keyOneS = 2
-keyTwoP = (keyGenComplex 3)
-keyTwoS = 3
+keyOneS = 5133
+keyOneP = (keyGenComplex keyOneS)
+keyTwoS = 5345
+keyTwoP = (keyGenComplex keyTwoS)
 
 resultOne = commonKey keyOneP keyTwoS
 resultTwo = commonKey keyTwoP keyOneS

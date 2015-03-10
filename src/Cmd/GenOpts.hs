@@ -27,7 +27,8 @@ data GenOpts = GenOpts { optKeyGenerator :: Integer
 					   , optJustPublic :: Bool
 					   , optGenPrime :: Integer
 					   , optGenRoot :: Integer
-					   , optComplex :: Bool }
+					   , optComplex :: Bool
+					   , optMulti :: String }
 
 instance Options GenOpts where
     defineOptions = pure GenOpts
@@ -76,4 +77,10 @@ instance Options GenOpts where
 			, optionLongFlags = ["complex"]
 			, optionDefault = False
 			, optionDescription = "Use a more secure, but more processor intensive, prime and primitive root (1024 bit)"
+			})
+    	<*> defineOption optionType_string (\o -> o
+			{ optionShortFlags = ['m']
+			, optionLongFlags = ["multi"]
+			, optionDefault = ""
+			, optionDescription = "Use multiple secrets for one key, seperate generators with a comma (,)"
 			})

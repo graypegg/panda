@@ -61,22 +61,22 @@ genKey mainOpts opts args = do
 		if (optJustPublic opts)==True then do
 			if (optGenJSON opts)==True then do
 				if (optFile mainOpts)/="" then do
-					writeData (optFile mainOpts) $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optKeyGenerator opts)) (optKeyGenerator opts) Public
+					writeData (optFile mainOpts) $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optMulti opts) (optKeyGenerator opts)) (optKeyGenerator opts) Public
 				else do
-					putStrLn $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optKeyGenerator opts)) (optKeyGenerator opts) Public
+					putStrLn $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optMulti opts) (optKeyGenerator opts)) (optKeyGenerator opts) Public
 			else do
 				if (optFile mainOpts)/="" then do
-					writeData (optFile mainOpts) $ (hashtagsStr opts "# This is your public key, give this to people.\n")++(formatKey (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optKeyGenerator opts)))
+					writeData (optFile mainOpts) $ (hashtagsStr opts "# This is your public key, give this to people.\n")++(formatKey (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optMulti opts) (optKeyGenerator opts)))
 				else do
 					hashtags opts "# This is your public key, give this to people."
-					putStrLn (formatKey (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optKeyGenerator opts)))
+					putStrLn (formatKey (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optMulti opts) (optKeyGenerator opts)))
 		else do
 			if (optJustSecret opts)==True then do
 				if (optGenJSON opts)==True then do
 					if (optFile mainOpts)/="" then do
-						writeData (optFile mainOpts) $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optKeyGenerator opts)) (optKeyGenerator opts) Private
+						writeData (optFile mainOpts) $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optMulti opts) (optKeyGenerator opts)) (optKeyGenerator opts) Private
 					else do
-						putStrLn $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optKeyGenerator opts)) (optKeyGenerator opts) Private
+						putStrLn $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optMulti opts) (optKeyGenerator opts)) (optKeyGenerator opts) Private
 				else do
 					if (optFile mainOpts)/="" then do
 						writeData (optFile mainOpts) $ (hashtagsStr opts "# This is your private key, hide this.\n")++(formatSecret (optKeyGenerator opts))
@@ -86,15 +86,15 @@ genKey mainOpts opts args = do
 			else do
 				if (optGenJSON opts)==True then do
 					if (optFile mainOpts)/="" then do
-						writeData (optFile mainOpts) $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optKeyGenerator opts)) (optKeyGenerator opts) AllKey
+						writeData (optFile mainOpts) $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optMulti opts) (optKeyGenerator opts)) (optKeyGenerator opts) AllKey
 					else do
-						putStrLn $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optKeyGenerator opts)) (optKeyGenerator opts) AllKey
+						putStrLn $ keyToJSON (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optMulti opts) (optKeyGenerator opts)) (optKeyGenerator opts) AllKey
 				else do
 					if (optFile mainOpts)/="" then do
-						writeData (optFile mainOpts) $ (hashtagsStr opts "# This is your public key, give this to people.\n")++(formatKey (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optKeyGenerator opts)))++"\n"++(hashtagsStr opts "# This is your private key, hide this.\n")++(formatSecret (optKeyGenerator opts))
+						writeData (optFile mainOpts) $ (hashtagsStr opts "# This is your public key, give this to people.\n")++(formatKey (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optMulti opts) (optKeyGenerator opts)))++"\n"++(hashtagsStr opts "# This is your private key, hide this.\n")++(formatSecret (optKeyGenerator opts))
 					else do
 						hashtags opts "# This is your public key, give this to people."
-						putStrLn (formatKey (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optKeyGenerator opts)))
+						putStrLn (formatKey (keyGenChoose (optComplex opts) (optGenPrime opts) (optGenRoot opts) (optMulti opts) (optKeyGenerator opts)))
 						hashtags opts "# This is your private key, hide this."
 						putStrLn (formatSecret (optKeyGenerator opts))
 
@@ -108,11 +108,19 @@ hashtagsStr opts str
 	| (optComments opts)==True = str
 	| otherwise                = ""
 
-keyGenChoose :: Bool -> Integer -> Integer -> Integer -> Key
-keyGenChoose x p g s
-	| p/=0 || g/=0 = keyGenPG s (p,g)
-	| x == True    = keyGenComplex s
-	| otherwise    = keyGen s
+keyGenChoose :: Bool -> Integer -> Integer -> String -> Integer -> Key
+keyGenChoose x p g m s
+	| (p/=0 || g/=0) && (mTrue m) = keysGenPG (toSecretList m) (p,g)
+	| (x == True) && (mTrue m)    = keysGenComplex (toSecretList m)
+	| p/=0 || g/=0                = keyGenPG s (p,g)
+	| x == True                   = keyGenComplex s
+	| mTrue m                     = keysGen (toSecretList m)
+	| otherwise                   = keyGen s
+
+mTrue :: String -> Bool
+mTrue m
+	| m /= ""   = True
+	| otherwise = False
 
 printVersion :: IO()
 printVersion = do
