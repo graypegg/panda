@@ -143,7 +143,7 @@ printVersion = do
 	putStrLn ("This is free software, and you are welcome to redistribute it")
 	putStrLn ("under certain conditions; Please see LICENSE to learn more.")
 	putStrLn ("----------------------------------------------------------------------")
-	putStrLn ("Version 4                                                Mar. 4rd 2015")
+	putStrLn ("Version 4                                               Mar. 12th 2015")
 
 askGenKey :: GenOpts -> [String] -> IO()
 askGenKey opt args= do
