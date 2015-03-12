@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
-module KeyIO(formatKey,unformatKey,formatSecret,unformatSecret,keyInfo,resultToJSON,keyToJSON,justResult,writeData,readData,readPublicKey,readSecretKey,toSecretList) where
+module KeyIO(formatKey,unformatKey,formatSecret,formatSecrets,unformatSecret,keyInfo,resultToJSON,keyToJSON,justResult,writeData,readData,readPublicKey,readSecretKey,toSecretList) where
 import KeyTypes
 import KeyGen
 import Numeric
@@ -36,6 +36,9 @@ unformatKey x = Key (getKeyX x) (GenData (getKeyP x) (getKeyG x))
 
 formatSecret :: Integer -> String
 formatSecret x = "PANDASECRET:"++(showHex x "")
+
+formatSecrets :: [Integer] -> String
+formatSecrets x = "PANDASECRETS:"++(showHexs x "")
 
 unformatSecret :: String -> Integer
 unformatSecret x = read ("0x"++((splitOn ":" x)!!1))::Integer
@@ -62,11 +65,11 @@ printIf b str
 resultToJSON :: Key -> Integer -> Result -> String
 resultToJSON (Key k (GenData p g)) s (Result r) = "{\"key\":"++(show k)++",\"secret\":"++(show s)++",\"result\":"++(show r)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
 
-keyToJSON :: (Show a) => Key -> a -> KeyType -> String
+keyToJSON :: Key -> [Integer] -> KeyType -> String
 keyToJSON (Key k (GenData p g)) s t
-	| t==Private = "{\"type\":\"single\",\"secret\":"++(show s)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
+	| t==Private = "{\"type\":\"single\",\"secret\":"++(show (s!!0))++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
 	| t==Public  = "{\"type\":\"single\",\"key\":"++(show k)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
-	| otherwise  = "{\"type\":\"single\",\"key\":"++(show k)++",\"secret\":"++(show s)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
+	| otherwise  = "{\"type\":\"single\",\"key\":"++(show k)++",\"secret\":"++(show (s!!0))++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
 keyToJSON (Keys k (GenData p g)) s t
     | t==Private = "{\"type\":\"multi\",\"secrets\":"++(show s)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
     | t==Public  = "{\"type\":\"multi\",\"keys\":"++(show k)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
