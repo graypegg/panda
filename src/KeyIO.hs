@@ -28,11 +28,14 @@ showHexs (x:xs) acc = showHexs xs ((showHex x "")++","++acc)
 showHexs [] acc = (init acc)
 
 formatKey :: Key -> String
-formatKey (Key x (GenData p g)) = "PANDAKEY:"++(showHex x "")++"-"++(showHex p "")++":"++(show g)
+formatKey (Key x (GenData p g))  = "PANDAKEY:"++(showHex x "")++"-"++(showHex p "")++":"++(show g)
 formatKey (Keys x (GenData p g)) = "PANDAKEYS:"++(showHexs x "")++"-"++(showHex p "")++":"++(show g)
 
 unformatKey :: String -> Key
-unformatKey x = Key (getKeyX x) (GenData (getKeyP x) (getKeyG x))
+unformatKey x
+    | "PANDAKEY:" `isPrefixOf` x  = Key (getKeyX x) (GenData (getKeyP x) (getKeyG x))
+    | "PANDAKEYS:" `isPrefixOf` x = Keys (getKeyXs x) (GenData (getKeyP x) (getKeyG x))
+    | otherwise                   = Key 0 (GenData 0 0)
 
 formatSecret :: Integer -> String
 formatSecret x = "PANDASECRET:"++(showHex x "")
@@ -40,11 +43,23 @@ formatSecret x = "PANDASECRET:"++(showHex x "")
 formatSecrets :: [Integer] -> String
 formatSecrets x = "PANDASECRETS:"++(showHexs x "")
 
-unformatSecret :: String -> Integer
-unformatSecret x = read ("0x"++((splitOn ":" x)!!1))::Integer
+unformatSecret :: String -> [Integer]
+unformatSecret x
+    | "PANDASECRET:" `isPrefixOf` x   = [(read ("0x"++((splitOn ":" x)!!1))::Integer)]
+    | "PANDASECRETS:" `isPrefixOf` x  = map (\x -> (read ("0x"++x)::Integer)) (toSecretArray x)
+    | otherwise                       = [0]
 
 getKeyX :: String -> Integer
 getKeyX x = (read ("0x"++((splitOn ":" ((splitOn "-" x)!!0))!!1))::Integer)
+
+getKeyXs :: String -> [Integer]
+getKeyXs x = map (\x -> (read ("0x"++x)::Integer)) (toKeyArray x)
+
+toKeyArray :: String -> [String]
+toKeyArray x = (splitOn "," ((splitOn ":" ((splitOn "-" x)!!0))!!1))
+
+toSecretArray :: String -> [String]
+toSecretArray x = (splitOn "," ((splitOn ":" x)!!1))
 
 getKeyP :: String -> Integer
 getKeyP x = (read ("0x"++((splitOn ":" ((splitOn "-" x)!!1))!!0))::Integer)
@@ -62,7 +77,7 @@ printIf b str
 	| b==True   = str
 	| otherwise = ""
 
-resultToJSON :: Key -> Integer -> Result -> String
+resultToJSON :: Key -> [Integer] -> Result -> String
 resultToJSON (Key k (GenData p g)) s (Result r) = "{\"key\":"++(show k)++",\"secret\":"++(show s)++",\"result\":"++(show r)++",\"genData\":{\"p\":"++(show p)++",\"g\":"++(show g)++"}}"
 
 keyToJSON :: Key -> [Integer] -> KeyType -> String
@@ -95,15 +110,17 @@ readData f = do
 
 readPublicKey :: [String] -> Key
 readPublicKey (x:xs)
-    | "PANDAKEY:" `isPrefixOf` x = unformatKey x
-    | otherwise                  = readPublicKey xs
+    | "PANDAKEY:" `isPrefixOf` x  = unformatKey x
+    | "PANDAKEYS:" `isPrefixOf` x = unformatKey x
+    | otherwise                   = readPublicKey xs
 readPublicKey [] = Key 0 (GenData 0 0)
 
-readSecretKey :: [String] -> Integer
+readSecretKey :: [String] -> [Integer]
 readSecretKey (x:xs)
-    | "PANDASECRET:" `isPrefixOf` x = unformatSecret x
-    | otherwise                     = readSecretKey xs
-readSecretKey [] = (-1)
+    | "PANDASECRET:" `isPrefixOf` x  = unformatSecret x
+    | "PANDASECRETS:" `isPrefixOf` x = unformatSecret x
+    | otherwise                      = readSecretKey xs
+readSecretKey [] = [(-1)]
 
 splitM :: String -> [String]
 splitM m = splitOn "," m

@@ -35,23 +35,23 @@ makeNumber mainOpts opts args
 	| (optFile mainOpts)/="" && (optJSON opts)==True = do
 		pubKey <- (checkIfFilePublic (optKeyPublic opts))
 		secretKey <- (checkIfFileSecret (optKeySecret opts))
-		writeData (optFile mainOpts) $ resultToJSON pubKey secretKey (commonKey pubKey secretKey)
+		writeData (optFile mainOpts) $ resultToJSON pubKey secretKey (commonKeyChoose pubKey secretKey)
 	| (optFile mainOpts)/="" && (optQuiet opts)==True = do
 		pubKey <- (checkIfFilePublic (optKeyPublic opts))
 		secretKey <- (checkIfFileSecret (optKeySecret opts))
-		writeData (optFile mainOpts) $ justResult (commonKey pubKey secretKey)
+		writeData (optFile mainOpts) $ justResult (commonKeyChoose pubKey secretKey)
 	| (optJSON opts)==True   = do
 		pubKey <- (checkIfFilePublic (optKeyPublic opts))
 		secretKey <- (checkIfFileSecret (optKeySecret opts))
-		putStrLn $ resultToJSON pubKey secretKey (commonKey pubKey secretKey)
+		putStrLn $ resultToJSON pubKey secretKey (commonKeyChoose pubKey secretKey)
 	| (optQuiet opts)== True = do
 		pubKey <- (checkIfFilePublic (optKeyPublic opts))
 		secretKey <- (checkIfFileSecret (optKeySecret opts))
-		putStrLn $ justResult (commonKey pubKey secretKey)
+		putStrLn $ justResult (commonKeyChoose pubKey secretKey)
 	| otherwise              = do
 		pubKey <- (checkIfFilePublic (optKeyPublic opts))
 		secretKey <- (checkIfFileSecret (optKeySecret opts))
-		print $ commonKey pubKey secretKey
+		print $ (commonKeyChoose pubKey secretKey)
 
 genKey :: MainOptions -> GenOpts -> [String] -> IO ()
 genKey mainOpts opts args = do
@@ -127,6 +127,10 @@ secretForJSON m n
 	| m == ""   = [n]
 	| otherwise = toSecretList m
 
+commonKeyChoose :: Key -> [Integer] -> Result
+commonKeyChoose (Key x gen) s  = commonKey (Key x gen) (s!!0)
+commonKeyChoose (Keys x gen) s  = commonKeys (Keys x gen) s
+
 mTrue :: String -> Bool
 mTrue m
 	| m /= ""   = True
@@ -151,16 +155,18 @@ askGenKey opt args= do
 		putStrLn "# This is your private key, hide this."
 		putStrLn (formatSecret (read priv::Integer))
 
-checkIfFileSecret :: String -> IO(Integer)
+checkIfFileSecret :: String -> IO([Integer])
 checkIfFileSecret x
-	| "PANDASECRET:" `isPrefixOf` x = return (unformatSecret x)
+	| "PANDASECRET:" `isPrefixOf` x  = return (unformatSecret x)
+	| "PANDASECRETS:" `isPrefixOf` x = return (unformatSecret x)
 	| otherwise                      = do
 									   raw <- readData x
 									   return (readSecretKey raw)
 
 checkIfFilePublic :: String -> IO(Key)
 checkIfFilePublic x
-	| "PANDAKEY:" `isPrefixOf` x = return (unformatKey x)
+	| "PANDAKEY:" `isPrefixOf` x  = return (unformatKey x)
+	| "PANDAKEYS:" `isPrefixOf` x = return (unformatKey x)
 	| otherwise                   = do
 									raw <- readData x
 									return (readPublicKey raw)
