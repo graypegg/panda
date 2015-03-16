@@ -28,6 +28,7 @@ import Options
 import Cmd.MainOpts
 import Cmd.MakeOpts
 import Cmd.GenOpts
+import Network.HTTP
 
 makeNumber :: MainOptions -> MakeOpts -> [String] -> IO ()
 makeNumber mainOpts opts args
@@ -143,7 +144,13 @@ printVersion = do
 	putStrLn ("This is free software, and you are welcome to redistribute it")
 	putStrLn ("under certain conditions; Please see LICENSE to learn more.")
 	putStrLn ("----------------------------------------------------------------------")
-	putStrLn ("Version 4                                               Mar. 12th 2015")
+	putStrLn ("Version 4.1                                             Mar. 15th 2015")
+	rsp <- Network.HTTP.simpleHTTP (getRequest "http://digitalpanda.ca/panda-version")
+	curver <- (getResponseBody rsp)
+	if (curver == "4.1") then do
+		putStrLn "------------------------ Up to date version --------------------------"
+	else
+		putStrLn "------------------------- Outdated version ---------------------------"
 
 askGenKey :: GenOpts -> [String] -> IO()
 askGenKey opt args= do
