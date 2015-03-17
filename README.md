@@ -15,7 +15,7 @@ You'll need to compile panda from source, but don't worry, it ain't that hard.
 ### You'll need:
 - GHC compiler
 - Cabal (If compiling with Cabal)
-- A BASH shell [Windows _**MIGHT**_ work]
+- Something that can run the Haskell Platform [Linux, Windows, OSX, etc]
 
 ### Compiling (The easy way)
 1. Clone the repo
