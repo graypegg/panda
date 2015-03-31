@@ -12,7 +12,7 @@ cabal-version:       >=1.8
 
 executable panda
   main-is: Main.hs
-  build-depends:       base, options ==1.2.*, split ==0.2.*, HTTP
+  build-depends:       base, options ==1.2.*, split ==0.2.*, HTTP, network
   hs-source-dirs:      src
 
 Test-Suite checkSimplePrime

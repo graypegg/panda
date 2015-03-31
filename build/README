@@ -1,7 +1,0 @@
-The newest version of the executable should be found here,
-you should be able to run it as:
-
-		./build/panda
-
-You may want to run "install.sh" to install panda to your
-system globally.
