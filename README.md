@@ -14,21 +14,16 @@ You'll need to compile panda from source, but don't worry, it ain't that hard.
 
 ### You'll need:
 - GHC compiler
-- Cabal (If compiling with Cabal)
+- Cabal
 - Something that can run the Haskell Platform [Linux, Windows, OSX, etc]
-
-### Compiling (The easy way)
-1. Clone the repo
-2. Run "make.sh" as root, from the main directory
-3. You should be able to use panda as a command!
 
 ### Compiling (The Cabal way)
 1. Clone the repo
-2. `runhaskell Setup configure`
-3. `runhaskell Setup build`
-4. `sudo runhaskell Setup install` **! Only if your running a BASH like shell !**
-4. `runhaskell Setup install` **! Only if your running windows !**
-5. You should be able to use panda as a command!
+2. cd into repo
+3. `cabal update`
+4. `cabal configure`
+5. `cabal install`
+6. You should be able to use panda as a command!
 
 ## How to use
 Panda works by using the Diffie-Hellman key exchange, which means you'll have to move the actual keys around yourself, but panda will generate them for you.
